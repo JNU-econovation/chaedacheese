@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
+/server/model/results/*
+/server/uploads/*
+/src/fonts
 
 # testing
 /coverage
