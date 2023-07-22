@@ -26,10 +26,10 @@ function App() {
     setSelectedImage(event.target.files[0]);
 
     const preview = document.querySelector(".previewImg")
-    const preds = document.querySelector(".preds")
-    if (preview !== null && preds !== null) {
+    const pred = document.querySelector(".pred")
+    if (preview !== null && pred !== null) {
       preview.remove();
-      preds.remove();
+      pred.remove();
     }
 
   };
@@ -74,31 +74,31 @@ function App() {
     } catch (error) {
       console.error('Error:', error);
     }
-
+    handlePredict();
   };
 
   const handlePredict = async () => {
     if (prediction) {
       console.log('prediction ', prediction)
 
-      const app = document.querySelector('.App');
-      const new_pTag = document.createElement('div');
+      const preds = document.querySelector('.preds');
+      const new_pTag = document.createElement('p');
 
-      new_pTag.setAttribute('class', 'preds');
+      // new_pTag.setAttribute('class', 'pred');
       
-      new_pTag.className = 'preds';
+      new_pTag.className = 'pred';
       new_pTag.innerText = prediction;
 
       // document.querySelector(".preds").innerHTML = prediction;
 
-      app.appendChild(new_pTag)
+      preds.appendChild(new_pTag)
 
     }
   }
 
-  useEffect(() => {
-    handlePredict();
-  }, []);
+  // useEffect(() => {
+  //   handlePredict();
+  // }, []);
 
 
 
@@ -134,7 +134,7 @@ function App() {
         {loading ? <Loading2 /> : null}
       </div>
       <div className='preds'>
-        {prediction && <p>Prediction: {prediction}</p>}
+        {prediction && <p className='pred'>Prediction: {prediction}</p>}
       </div>
     </div>
   );
