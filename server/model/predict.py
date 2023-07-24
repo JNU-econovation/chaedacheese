@@ -51,6 +51,7 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6):
     prob = knn_clf.predict_proba(faces_encodings)[0]
             
     result = dict()
+    res = dict()
     prd = list()
 
     for i in range(len(label)):
@@ -58,11 +59,15 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6):
     sorted_result = sorted(result.values(), reverse=True)
     top_3 = sorted_result[:3]
     for i in range(len(top_3)):
-        prd.append(([k for k, v in result.items() if v==top_3[i]][0], top_3[i] / sum(top_3), X_face_locations[0]))
+        # prd.append(([k for k, v in result.items() if v==top_3[i]][0], top_3[i] / sum(top_3), X_face_locations[0]))
 
-    print(prd)
+        res[str(i)] = { "name": [k for k, v in result.items() if v==top_3[i]][0],
+                   "prob": str(top_3[i] / sum(top_3)),
+                   "coor": str(X_face_locations[0]) }
+
+    print(str(res).replace('*', '').replace('\'', '\"'))
     # sys.stdout.flush()
-    return prd
+    return res
 
 
 def show_prediction_labels_on_image(img_path, predictions):
@@ -116,4 +121,4 @@ if __name__ == "__main__":
     # STEP 2: Using the trained classifier, make predictions for unknown images
 
     predictions = predict(sys.argv[1], model_path="C:/Users/user/Desktop/summerdev/summerdev/server/model/model_save_aug.clf")
-    show_prediction_labels_on_image(sys.argv[1], predictions)
+    # show_prediction_labels_on_image(sys.argv[1], predictions)

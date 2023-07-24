@@ -7,14 +7,16 @@ import './App.css';
 
 import bg from './ui/web background.jpg';
 import img from './ui/btn.png';
-import imgFrame from './ui/imgFrame.svg'
+import imgFrame from './ui/imgFrame.svg';
 
+let predict = '';
+let predJSON = '';
 
 function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [predjson, setpredjson] = useState(false);
 
   const scrollbarWidth = window.innerWidth - document.body.clientWidth;
   document.getElementsByClassName("App").width = scrollbarWidth
@@ -25,13 +27,13 @@ function App() {
 
     setSelectedImage(event.target.files[0]);
 
+    // 이전 사용자의 이미지 및 예측 결과 삭제
+    const preds = document.querySelector(".preds")
     const preview = document.querySelector(".previewImg")
-    const pred = document.querySelector(".pred")
-    if (preview !== null && pred !== null) {
+    if (preds !== null && preview !== null) {
+      preds.remove();
       preview.remove();
-      pred.remove();
     }
-
   };
 
   // 이미지 업로드 및 예측 요청
@@ -42,22 +44,26 @@ function App() {
 
     formData.append('image', selectedImage);
 
+    // 사용자가 이미지를 선택하여 업로드하면, 해당 이미지를 출력
     if (selectedImage) {
 
+      // 태그 설정 및 추가
       const usrImg = document.querySelector('.usrImg');
       const new_imgTag = document.createElement('img');
-
-      new_imgTag.setAttribute('class', 'previewImg');
+      new_imgTag.className = 'previewImg';
       usrImg.appendChild(new_imgTag)
 
+      // fileReader 모듈을 사용하여 img 태그의 src 설정
       fileReader.readAsDataURL(selectedImage);
       fileReader.onload = function () {
         document.querySelector(".previewImg").src = fileReader.result;
       };
+
     } else {
       return;
     };
 
+    // api와의 통신 전 loading = true로 변경하여 스피너가 출력되도록 함
     setLoading(true);
 
     try {
@@ -66,41 +72,67 @@ function App() {
         body: formData,
       });
 
-      // console.log(response.body)
+      // predict.py의 실행 결과를 수신받고, JSON 형태로 parse 진행
       const data = await response.json();
-      // console.log(response)
+      predict = data.prediction;
+      predJSON = JSON.parse(predict);
+
       setPrediction(data.prediction);
+      setpredjson(predJSON);
+
+      // api로부터 정보 수신이 완료되면 스피너가 숨겨지도록 함
       setLoading(false);
+
+      handlePredict();
     } catch (error) {
       console.error('Error:', error);
     }
-    handlePredict();
+
   };
 
+
   const handlePredict = async () => {
+
     if (prediction) {
-      console.log('prediction ', prediction)
+      // 사용자의 이미지를 업로드하면 .preds 태그가 삭제되므로, 다음 사용자를 위해 해당 태그를 재생성 
+      const app = document.querySelector('.App');
+      const predsTag = document.createElement('div');
+
+      predsTag.className = 'preds';
+      app.appendChild(predsTag);
 
       const preds = document.querySelector('.preds');
-      const new_pTag = document.createElement('p');
 
-      // new_pTag.setAttribute('class', 'pred');
-      
-      new_pTag.className = 'pred';
-      new_pTag.innerText = prediction;
+      for (let i = 0; i < 3; i++) {
+        const results = document.createElement('span');
+        results.className = `resultSpan${i + 1}`;
+        preds.appendChild(results)
+      }
 
-      // document.querySelector(".preds").innerHTML = prediction;
+      for (let i = 0; i < 3; i++) {
 
-      preds.appendChild(new_pTag)
+        const resultSpan = document.querySelector(`.resultSpan${i + 1}`);
+        const new_imgTag = document.createElement('img');
+        const gradeTag = document.createElement('h2')
+        const nameTag = document.createElement('h3')
 
+        new_imgTag.className = 'result';
+        new_imgTag.src = `/celeb/${predJSON[i].name}5.jpg`;
+
+        gradeTag.className = 'grade';
+        gradeTag.innerText = `${i + 1}위`
+
+        nameTag.className = 'name'
+        nameTag.style = "font-weight: bold;"
+        nameTag.innerText = `${predJSON[i].name}`
+
+        resultSpan.appendChild(new_imgTag)
+        resultSpan.appendChild(gradeTag)
+        resultSpan.appendChild(nameTag)
+
+      }
     }
   }
-
-  // useEffect(() => {
-  //   handlePredict();
-  // }, []);
-
-
 
   return (
 
@@ -132,12 +164,29 @@ function App() {
       </div>
       <div className='loader'>
         {loading ? <Loading2 /> : null}
+
       </div>
-      <div className='preds'>
-        {prediction && <p className='pred'>Prediction: {prediction}</p>}
-      </div>
+      {prediction &&
+        <div className='preds'>
+          <span className='resultSpan1'>
+            <img className='result' src={`/celeb/${predjson[0].name}5.jpg`}></img>
+            <h2 className='grade'>1위</h2>
+            <h3 className='name'>{predjson[0].name}</h3>
+          </span>
+          <span className='resultSpan2'>
+            <img className='result' src={`/celeb/${predjson[1].name}5.jpg`}></img>
+            <h2 className='grade'>2위</h2>
+            <h3 className='name'>{predjson[1].name}</h3>
+          </span>
+          <span className='resultSpan3'>
+            <img className='result' src={`/celeb/${predjson[2].name}5.jpg`}></img>
+            <h2 className='grade'>3위</h2>
+            <h3 className='name'>{predjson[2].name}</h3>
+          </span>
+        </div>}
     </div>
   );
 }
+
 
 export default App;

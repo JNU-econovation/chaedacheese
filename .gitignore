@@ -7,6 +7,7 @@
 /server/model/results/*
 /server/uploads/*
 /src/fonts
+/public/celeb/*
 
 # testing
 /coverage
