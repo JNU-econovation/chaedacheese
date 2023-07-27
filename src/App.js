@@ -19,6 +19,7 @@ function App() {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [predjson, setpredjson] = useState(false);
+  const [gender, setGender] = useState(false);
 
   const scrollbarWidth = window.innerWidth - document.body.clientWidth;
   document.getElementsByClassName("App").width = scrollbarWidth
@@ -42,10 +43,15 @@ function App() {
   // 이미지 업로드 및 예측 요청
   const handleImageUpload = async () => {
 
+    const preds = document.querySelector(".preds")
+    if (preds !== null) {
+      preds.remove();
+    }
     const fileReader = new FileReader();
     const formData = new FormData();
 
     formData.append('image', selectedImage);
+    formData.append('gender', gender)
 
     // 사용자가 이미지를 선택하여 업로드하면, 해당 이미지를 출력
     if (selectedImage) {
@@ -87,9 +93,12 @@ function App() {
       setLoading(false);
 
       handlePredict();
+      console.log(gender)
+
     } catch (error) {
       console.error('Error:', error);
     }
+    // console.log(gender)
 
   };
 
@@ -129,7 +138,7 @@ function App() {
         new_imgTag.backgroundSize = 'cover';
         new_imgTag.width = '100%'
         new_imgTag.display = 'flex'
-        new_imgTag.alignItems = 'center'  
+        new_imgTag.alignItems = 'center'
 
         gradeTag.className = 'grade';
         gradeTag.innerText = `· ${i + 1}위 ·`
@@ -191,6 +200,12 @@ function App() {
   };
 
 
+  const handleGenderChange = (e) => {
+    const value = e.target.value;
+    setGender(value);
+  };
+
+
   return (
     <div>
 
@@ -208,12 +223,24 @@ function App() {
             <input type="file" onChange={handleImageSelect} id='select' hidden />
           </span>
 
+          <span className='btn dropdown'>
+            <img src={img} className='btnDeco'></img>
+            <select onChange={handleGenderChange} id="gender" className='btnText btnLbl dropdown'>
+              <option className='btnText dropbtn' value="">· 성별 선택 ·</option>
+              <option value="all">무관</option>
+              <option value="M">남성</option>
+              <option value="F">여성</option>
+            </select>
+          </span>
+
+
           <span className='btn'>
             <img src={img} className='btnDeco'></img>
             <label onClick={handleImageUpload} htmlFor='upload' className='btnLbl'>
               <p className='btnText'>· AI 세계로 전송 ·</p>
             </label>
           </span>
+
 
         </div>
 
