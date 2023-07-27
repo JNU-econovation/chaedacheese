@@ -7,17 +7,14 @@ import pickle
 from PIL import Image, ImageDraw, ImageFont
 import face_recognition
 from face_recognition.face_recognition_cli import image_files_in_folder
+import pandas as pd
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
-def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6):
+def predict(X_img_path, gender, knn_clf=None, model_path=None, distance_threshold=1):
 
-    # if not os.path.isfile(X_img_path) or os.path.splitext(X_img_path)[1][1:] not in ALLOWED_EXTENSIONS:
-    #     raise Exception("Invalid image path: {}".format(X_img_path))
-
-    # if knn_clf is None and model_path is None:
-    #     raise Exception("Must supply knn classifier either thourgh knn_clf or model_path")
+    total_df = pd.read_csv('C:/Users/user/Desktop/summerdev/summerdev/server/model/total_df.csv', encoding='utf-8')
 
     # Load a trained KNN model (if one was passed in)
     if knn_clf is None:
@@ -56,6 +53,16 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6):
 
     for i in range(len(label)):
         result[label[i]] = prob[i]
+    result.pop('fromi')
+   
+    
+    if gender == 'M':
+        for i in range(len(total_df['Name'][total_df['Gender'] =='F'])):
+            result.pop(list(total_df['Name'][total_df['Gender'] =='F'])[i])    
+    elif gender == 'F':
+        for i in range(len(total_df['Name'][total_df['Gender'] =='M'])):
+            result.pop(list(total_df['Name'][total_df['Gender'] =='M'])[i])      
+        
     sorted_result = sorted(result.values(), reverse=True)
     top_3 = sorted_result[:3]
     for i in range(len(top_3)):
@@ -119,5 +126,5 @@ def show_prediction_labels_on_image(img_path, predictions):
 if __name__ == "__main__":
     # STEP 2: Using the trained classifier, make predictions for unknown images
 
-    predictions = predict(sys.argv[1], model_path="C:/Users/user/Desktop/summerdev/summerdev/server/model/model_save_aug1.clf")
+    predictions = predict(sys.argv[1], sys.argv[2], model_path="C:/Users/user/Desktop/summerdev/summerdev/server/model/model_save_aug.clf")
     # show_prediction_labels_on_image(sys.argv[1], predictions)

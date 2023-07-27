@@ -47,7 +47,7 @@ span {
 
 .btn {
   position: relative;
-  width: 320px;
+  width: 310px;
   text-align: center;
 }
 
@@ -105,7 +105,7 @@ span {
 }
 
 .result {
-  padding: 0 15px;
+  padding: 0 30px;
   object-fit: cover;
   width: 300px;
   height: 400px;
@@ -118,4 +118,9 @@ img.vertical {
 }
 img.horizontal {
 	height: 100%;
+}
+
+.dropdown{
+  border: none;
+  background-color: transparent;
 }

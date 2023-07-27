@@ -22,12 +22,16 @@ const upload = multer({
 // 이미지 업로드 및 모델 실행 라우트 설정
 router.post('/', upload.single('image'), (req, res) => {
   const start = Date.now()
+
+  const gender = req.body.gender
+  console.log('gender ', gender)
+
   const imagePath = req.file.path;
 
   const path = 'C:/Users/user/Desktop/summerdev/summerdev/server/' + imagePath.split('\\')[0] + '/' + imagePath.split('\\')[1]
   
   // face_recognition 모델 실행
-  const pythonProcess = spawn('C:/Users/user/anaconda3/envs/chaeda/python', ['C:/Users/user/Desktop/summerdev/summerdev/server/model/predict.py', path]);
+  const pythonProcess = spawn('C:/Users/user/anaconda3/envs/chaeda/python', ['C:/Users/user/Desktop/summerdev/summerdev/server/model/predict.py', path, gender]);
 
     pythonProcess.stdout.on('data', (data) => {
       const prediction = iconv.decode(data, 'euc-kr').toString();
