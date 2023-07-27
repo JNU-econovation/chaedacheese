@@ -47,7 +47,7 @@ span {
 
 .btn {
   position: relative;
-  width: 300px;
+  width: 320px;
   text-align: center;
 }
 
@@ -90,14 +90,32 @@ span {
   top: 80%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: herio;
+  font-family: heriof;
 }
 
 .preds {
+  width: 1200px;
   position: absolute;
-  /* bottom: -50%; */
-  top: 80%;
+  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: herio;
+  text-align: center;
+  font-family: heriof;
+  font-weight: bold;
+}
+
+.result {
+  padding: 0 15px;
+  object-fit: cover;
+  width: 300px;
+  height: 400px;
+  max-width: 100%;
+}
+
+
+img.vertical {
+	width: 100%;
+}
+img.horizontal {
+	height: 100%;
 }
