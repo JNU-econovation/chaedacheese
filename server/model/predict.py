@@ -69,7 +69,6 @@ def predict(X_img_path, knn_clf=None, model_path=None, distance_threshold=0.6):
     # sys.stdout.flush()
     return res
 
-
 def show_prediction_labels_on_image(img_path, predictions):
     """
     Shows the face recognition results visually.
@@ -120,5 +119,5 @@ def show_prediction_labels_on_image(img_path, predictions):
 if __name__ == "__main__":
     # STEP 2: Using the trained classifier, make predictions for unknown images
 
-    predictions = predict(sys.argv[1], model_path="C:/Users/user/Desktop/summerdev/summerdev/server/model/model_save_aug.clf")
+    predictions = predict(sys.argv[1], model_path="C:/Users/user/Desktop/summerdev/summerdev/server/model/model_save_aug1.clf")
     # show_prediction_labels_on_image(sys.argv[1], predictions)

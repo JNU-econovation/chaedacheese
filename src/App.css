@@ -47,7 +47,7 @@ span {
 
 .btn {
   position: relative;
-  width: 300px;
+  width: 320px;
   text-align: center;
 }
 
@@ -109,4 +109,13 @@ span {
   object-fit: cover;
   width: 300px;
   height: 400px;
+  max-width: 100%;
+}
+
+
+img.vertical {
+	width: 100%;
+}
+img.horizontal {
+	height: 100%;
 }

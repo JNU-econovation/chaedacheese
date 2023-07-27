@@ -5,6 +5,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const iconv = require('iconv-lite');
 
+
 const upload = multer({
   storage: multer.diskStorage({
     // set a localstorage destination
@@ -41,6 +42,8 @@ router.post('/', upload.single('image'), (req, res) => {
     pythonProcess.stderr.on('data', function(data) {
       console.log("err", data.toString());
 });
+
+
 });
 
 

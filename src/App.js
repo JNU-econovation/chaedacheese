@@ -2,6 +2,8 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { Route, BrowserRouter, Routes, Switch, Link } from 'react-router-dom';
 import axios from 'axios';
 import Loading2 from './Loading/Loading';
+import html2canvas from "html2canvas";
+import { QRCodeSVG } from 'qrcode.react'
 
 import './App.css';
 
@@ -20,6 +22,7 @@ function App() {
 
   const scrollbarWidth = window.innerWidth - document.body.clientWidth;
   document.getElementsByClassName("App").width = scrollbarWidth
+  const bgHeight = document.getElementsByClassName("bg").height
 
 
   // 이미지 선택 시 이벤트 핸들러
@@ -106,6 +109,10 @@ function App() {
       for (let i = 0; i < 3; i++) {
         const results = document.createElement('span');
         results.className = `resultSpan${i + 1}`;
+        results.width = '300px';
+        results.height = '400px';
+        results.overflow = 'hidden';
+        results.padding = '0px 15px'
         preds.appendChild(results)
       }
 
@@ -116,11 +123,16 @@ function App() {
         const gradeTag = document.createElement('h2')
         const nameTag = document.createElement('h3')
 
+
         new_imgTag.className = 'result';
-        new_imgTag.src = `/celeb/${predJSON[i].name}5.jpg`;
+        new_imgTag.src = `/crop_celeb/${predJSON[i].name}1.jpg`;
+        new_imgTag.backgroundSize = 'cover';
+        new_imgTag.width = '100%'
+        new_imgTag.display = 'flex'
+        new_imgTag.alignItems = 'center'  
 
         gradeTag.className = 'grade';
-        gradeTag.innerText = `${i + 1}위`
+        gradeTag.innerText = `· ${i + 1}위 ·`
 
         nameTag.className = 'name'
         nameTag.style = "font-weight: bold;"
@@ -131,59 +143,107 @@ function App() {
         resultSpan.appendChild(nameTag)
 
       }
+
+      // const capture = document.querySelector('#root')
+      // capture.style.height = String(bgHeight)
+      // html2canvas(capture, { scale: 4 }).then(
+      //   canvas => {
+      //     saveAs(canvas.toDataURL('image/jpg'), 'result.png')
+      //   }
+      // )
+
+
+      // const saveAs = (uri, filename) => {
+      //   console.log('onSaveAs');
+      //   let link = document.createElement('a');
+      //   document.body.appendChild(link);
+      //   link.href = uri;
+      //   link.download = filename;
+      //   link.click();
+      //   document.body.removeChild(link);
+      // };
+
+      // capture.style.height = 'auto'
+
     }
   }
 
+  const onHtmlToPng = () => {
+    const capture = document.querySelector('.App')
+    capture.style.height = String(bgHeight)
+    html2canvas(capture, { scale: 4 }).then(
+      canvas => {
+        saveAs(canvas.toDataURL('image/jpg'), 'result.png')
+      }
+    )
+
+    capture.style.height = 'auto'
+  }
+
+  const saveAs = (uri, filename) => {
+    console.log('onSaveAs');
+    let link = document.createElement('a');
+    document.body.appendChild(link);
+    link.href = uri;
+    link.download = filename;
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
   return (
+    <div>
 
-    <div className='App'>
+      <div className='App'>
 
-      <img src={bg} className='bg'></img>
+        <img src={bg} className='bg'></img>
 
-      <div className='btns'>
+        <div className='btns'>
 
-        <span className='btn'>
-          <img src={img} className='btnDeco'></img>
-          <label onChange={handleImageSelect} htmlFor='select' className='btnLbl'>
-            <p className='btnText'>내 사진 선택</p>
-          </label>
-          <input type="file" onChange={handleImageSelect} id='select' hidden />
-        </span>
-
-        <span className='btn'>
-          <img src={img} className='btnDeco'></img>
-          <label onClick={handleImageUpload} htmlFor='upload' className='btnLbl'>
-            <p className='btnText'>AI 세계로 전송</p>
-          </label>
-        </span>
-
-      </div>
-
-      <div className='usrImg'>
-        <img src={imgFrame} className='imgFrame'></img>
-      </div>
-      <div className='loader'>
-        {loading ? <Loading2 /> : null}
-
-      </div>
-      {prediction &&
-        <div className='preds'>
-          <span className='resultSpan1'>
-            <img className='result' src={`/celeb/${predjson[0].name}5.jpg`}></img>
-            <h2 className='grade'>1위</h2>
-            <h3 className='name'>{predjson[0].name}</h3>
+          <span className='btn'>
+            <img src={img} className='btnDeco'></img>
+            <label onChange={handleImageSelect} htmlFor='select' className='btnLbl'>
+              <p className='btnText'>· 내 사진 선택 ·</p>
+            </label>
+            <input type="file" onChange={handleImageSelect} id='select' hidden />
           </span>
-          <span className='resultSpan2'>
-            <img className='result' src={`/celeb/${predjson[1].name}5.jpg`}></img>
-            <h2 className='grade'>2위</h2>
-            <h3 className='name'>{predjson[1].name}</h3>
+
+          <span className='btn'>
+            <img src={img} className='btnDeco'></img>
+            <label onClick={handleImageUpload} htmlFor='upload' className='btnLbl'>
+              <p className='btnText'>· AI 세계로 전송 ·</p>
+            </label>
           </span>
-          <span className='resultSpan3'>
-            <img className='result' src={`/celeb/${predjson[2].name}5.jpg`}></img>
-            <h2 className='grade'>3위</h2>
-            <h3 className='name'>{predjson[2].name}</h3>
-          </span>
-        </div>}
+
+        </div>
+
+        <div className='usrImg'>
+          <img src={imgFrame} className='imgFrame'></img>
+        </div>
+        <div className='loader'>
+          {loading ? <Loading2 /> : null}
+
+        </div>
+        {prediction &&
+          <div className='preds'>
+            <span className='resultSpan1'>
+              <img className='result' src={`/crop_celeb/${predjson[0].name}1.jpg`}></img>
+              <h2 className='grade'>· 1위 ·</h2>
+              <h3 className='name'>{predjson[0].name}</h3>
+            </span>
+            <span className='resultSpan2'>
+              <img className='result' src={`/crop_celeb/${predjson[1].name}1.jpg`}></img>
+              <h2 className='grade'>· 2위 ·</h2>
+              <h3 className='name'>{predjson[1].name}</h3>
+            </span>
+            <span className='resultSpan3'>
+              <img className='result' src={`/crop_celeb/${predjson[2].name}1.jpg`}></img>
+              <h2 className='grade'>· 3위 ·</h2>
+              <h3 className='name'>{predjson[2].name}</h3>
+            </span>
+          </div>}
+      </div>
+      <button onClick={onHtmlToPng}>다운로드</button>
     </div>
   );
 }
