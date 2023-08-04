@@ -1,14 +1,14 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/web/node_modules
 /.pnp
 .pnp.js
-/server/model/results/*
-/server/uploads/*
-/src/fonts
-/public/celeb/*
-/public/crop_celeb/*
+/web/server/model/results/*
+/web/server/uploads/*
+/web/src/fonts
+/web/public/celeb/*
+/web/public/crop_celeb/*
 
 # testing
 /coverage
